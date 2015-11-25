@@ -1,4 +1,4 @@
-﻿# __author__ = 'ZongChang'
+# __author__ = 'ZongChang'
 # -*- coding:utf-8 -*-
 
 import mysql.connector
@@ -6,10 +6,10 @@ from mysql.connector import errorcode
 
 
 config = {
-    'user': 'xxxx',
-    'password': 'xxxxxxxxx',
-    'host': 'xxxxxxxx',
-    'database': 'xxx',
+    'user': 'bigdata',
+    'password': '4WsiKvxhi9pITBfO4Mc8',
+    'host': '10.33.64.15',
+    'database': 'report',
     'use_pure': True  # The default is True which means using pure Python rather than C extensions
 }
 

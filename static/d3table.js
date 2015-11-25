@@ -13,9 +13,9 @@ var padding = 10;
 var margin = {top: 70, right: 20, bottom: 30, left: 60 },
     width = 180 * columns.length - margin.left - margin.right,
     height = 250 * table_content.length - margin.top - margin.bottom;
-var zoom = d3.behavior.zoom()
-    .scaleExtent([1, 10])
-    .on("zoom", zoomed);
+//var zoom = d3.behavior.zoom()
+    //.scaleExtent([1, 10])
+    //.on("zoom", zoomed);
 
 d3.select("svg").remove();
 var svg = d3.select("body").append("svg")
@@ -23,7 +23,7 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
     .attr("fill", "#ff8000")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .call(zoom)
+    //.call(zoom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + (margin.top-10) + ")");
 
@@ -99,6 +99,7 @@ bar.selectAll("rect")
 
 current_pos = 0;
 index = 0;
+
 bar.selectAll("content")
     .data(function(d){ return d.value; })
     .enter().append("text")
@@ -107,11 +108,27 @@ bar.selectAll("content")
     .style("text-anchor", "left")
     .style("fill", "Black")
     .style("font", "15px Arial")
-    .style("font-weight", function(d, i){ if (i==1 || i==4 || i==6) return "bold";
-                                          else return "normal";})
-    .text(function(d, i){if (typeof d.content == "string") return d.content;
-                         else if (d.content < 0) return "("+String(Math.abs(d.content)).replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+")";
-                         else return String(d.content).replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");});
+    .style("font-weight", "normal")
+    .text(function(d, i){
+        if (typeof d.content == "string") {
+            if (i == table_content.length-2){
+                console.log('here');
+                index++;
+                if (index == 5) {
+                    var tooltip = d3.select("body")
+                        .append("div")
+                        .style("position", "absolute")
+                        .style("z-index", "10")
+                        .style("visibility", "visiable")
+                        .style("top", "680px")
+                        .style("left", "790px")
+                        .html(d.content.substr(0, d.content.length/2)+"<br/>"+ d.content.substr(d.content.length/2, d.content.length-1));
+                    //return d.content.substr(0, d.content.length/2)+"<br />"+d.content.substr(d.content.length/2, d.content.length-1);
+                }
+                else return d.content;
+            }
+        }
+        else return String(d.content).replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");});
 
 //Half hard code the style of the table head
 var table_head = svg.append("g");

@@ -14,7 +14,7 @@ config = {
 }
 
 
-add_employee = ("INSERT INTO TableManager "
+add_table = ("INSERT INTO TableManager "
                "(tableManagerId, tableName, tableType, dataLevel, procName, note, inputMan, inputDate, updateMan, updateDate)"
                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
@@ -36,6 +36,14 @@ def database_connection(configuration):
         return cnx
 
 
-# def table_insertion(cur):
+def table_insertion(cur, data_table):
+    try:
+        print 'Inserting new information into table'
+        cur.execute(add_table, data_table)
+    except mysql.connector.Error as err:
+        print err.message
+        return -1
+    else:
+        print 'OK'
 
 

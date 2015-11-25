@@ -11,30 +11,31 @@
     </script>
 </head>
 <body>
-<script src="{{ url_for('static', filename='d3table.js') }}"></script>
 <form style="width:300px">
     <p>tableName: <input style="float:right" type="text" name="table_name" id="table_name" /></p>
     <p>tableType:
     <select style="float:right" id="table_type" size=3>
-        <option value="zhongjianbiao">中间表</option>
-        <option value="weidubiao">维度表</option>
-        <option value="chaxunbiao">查询表</option>
-        <option value="shishibiao">事实表</option>
+        <option value="中间表">中间表</option>
+        <option value="维度表">维度表</option>
+        <option value="查询表">查询表</option>
+        <option value="事实表">事实表</option>
     </select></p>
     <br>
     <p>dataLevel:
     <select style="float:right" id="data_level" size=3>
-        <option value="zhongjianbiao">日汇总</option>
-        <option value="weidubiao">周汇总</option>
-        <option value="chaxunbiao">月汇总</option>
+        <option value="日汇总">日汇总</option>
+        <option value="周汇总">周汇总</option>
+        <option value="月汇总">月汇总</option>
     </select></p>
     <br>
     <p>procName: <input style="float:right" type="text" name="proc_name" id="proc_name" /></p>
-    <p>note: <input style="float:right" type="text" name="note" id="note" /></p>
+    <p>note: <textarea  style="float:right" name="note" id="note" rows="3" cols="25"></textarea></p>
+    <br>
+
     <p>inputMan: <input style="float:right" type="text" name="input_man" id="input_man" /></p>
-    <p>inputDate: <input style="float:right" type="text" name="input_date" id="input_date" /></p>
+    <p>inputDate: <input style="float:right" type="datetime-local" id="input_date" /></p>
     <p>updateMan: <input style="float:right" type="text" name="update_man" id="update_man" /></p>
-    <p>updateDate: <input style="float:right" type="text" name="update_date" id="update_date" /></p>
+    <p>updateDate: <input style="float:right" type="datetime-local" id="update_date" /></p>
 </form>
 <button id="button">添加</button>
 <br>
@@ -68,5 +69,6 @@
         $("body").append("<div id='ref_msg'>Updating data...</div>");
     });
 </script>
+<script src="{{ url_for('static', filename='d3table.js') }}"></script>
 </body>
 </html>
