@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'MySQL数据库管理应用'
+    return render_template('index.html')
 
 
 @app.route('/tablemanager', methods=['GET', 'POST'])
