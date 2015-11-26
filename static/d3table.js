@@ -18,6 +18,9 @@ var margin = {top: 70, right: 20, bottom: 30, left: 60 },
     //.on("zoom", zoomed);
 
 d3.select("svg").remove();
+d3.select(".tooltip").remove();
+d3.select(".editor").remove();
+d3.select(".submit").remove();
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -74,16 +77,43 @@ function color(data)
 var index_list = [];
 var index = 0;
 var current_pos = 0;
+var cumu_cell_length = [0];
+
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class","tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden");
+var editor = d3.select("body")
+    .append("input")
+    .attr("class","editor")
+    .attr("type", "text")
+    .style("visibility", "hidden")
+    .style("position", "absolute");
+var selector = d3.select("body")
+    .append("select")
+    .attr("size", 3)
+    .style("visibility", "hidden")
+    .style("position", "absolute");
+var submit = d3.select("body")
+    .append("input")
+    .attr("type", "submit")
+    .attr("value", "Submit")
+    .attr("class", "submit")
+    .style("visibility", "hidden")
+    .style("position", "absolute");
+
 var bar = svg.selectAll(".bar")
     .data(dataset)
-    .enter().append("g")
+    .enter().append("g").attr("id", function(d, i) {return i.toString();})
     //.attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; })
-    .attr("transform", function(d, i) { var c = current_pos; current_pos += x_cell_len(cell_length[i]); return "translate(" + c + ",0)"; })
+    .attr("transform", function(d, i) { var c = current_pos; current_pos += x_cell_len(cell_length[i]); cumu_cell_length.push(current_pos); return "translate(" + c + ",0)"; })
     .style("fill", function(d, i) { return color(i%2); });
 bar.selectAll("rect")
     .data(function(d){ return d.value; })
     .enter().append("rect")
-    .attr("y", function(d) { return y( d.space ) - height/row_num; })
+    .attr("y", function(d) { return y( d.space ) - height/row_num - height/row_num/4; })
     .attr("height", height/row_num)
 /*             .attr("width", function(d, i){if (index_list.indexOf(i) == -1){
                                 index_list.push(i);
@@ -95,7 +125,29 @@ bar.selectAll("rect")
                                    }
                                    return x_cell_len(cell_length[index]); })
     .style("stroke", "#409DAD")
-    .style("stroke-width", 0.1);
+    .style("stroke-width", 0.1)
+    .on("mouseover", function(d){
+        tooltip.style("visibility", "visible")
+            //.style("top", (d3.event.pageY-10)+"px")
+            //.style("left",(d3.event.pageX+10)+"px")
+            .html(d.content);
+    })
+    .on("mousemove", function(){
+        tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
+    })
+    .on("mouseout", function(){
+        tooltip.style("visibility", "hidden");
+    })
+    .on("click", function(d, i){
+        var row = (row_num - i - 2).toString();
+        var column = d3.select(this).node().parentNode.id;
+        editor.attr("id", "editor"+row+column).style("visibility", "visible")
+            .style("top", (430+y(d.space))+"px").style("left", (cumu_cell_length[column]+70)+"px");
+        submit.attr("id", "submit"+row+column).style("visibility", "visible")
+            .style("top", (430+y(d.space))+"px");
+        if (column == 7 || column == 9) editor.attr("type", "datetime-local");
+        else editor.attr("type", "text");
+    });
 
 current_pos = 0;
 index = 0;
@@ -104,29 +156,14 @@ bar.selectAll("content")
     .data(function(d){ return d.value; })
     .enter().append("text")
     .attr("x", padding)
-    .attr("y", function(d){ return y( d.space ) - height/row_num + height/row_num/2; })
+    .attr("y", function(d){ return y( d.space ) - height/row_num - height/row_num/4 + height/row_num/2; })
     .style("text-anchor", "left")
     .style("fill", "Black")
     .style("font", "15px Arial")
     .style("font-weight", "normal")
     .text(function(d, i){
         if (typeof d.content == "string") {
-            if (i == table_content.length-2){
-                console.log('here');
-                index++;
-                if (index == 5) {
-                    var tooltip = d3.select("body")
-                        .append("div")
-                        .style("position", "absolute")
-                        .style("z-index", "10")
-                        .style("visibility", "visiable")
-                        .style("top", "680px")
-                        .style("left", "790px")
-                        .html(d.content.substr(0, d.content.length/2)+"<br/>"+ d.content.substr(d.content.length/2, d.content.length-1));
-                    //return d.content.substr(0, d.content.length/2)+"<br />"+d.content.substr(d.content.length/2, d.content.length-1);
-                }
-                else return d.content;
-            }
+                return d.content;
         }
         else return String(d.content).replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");});
 
@@ -137,7 +174,7 @@ table_head.append("rect")
     .attr("x", 0)
     .attr("y", 0)
     .attr("width", x_cell_len(table_length))
-    .attr("height", height/row_num)
+    .attr("height", height/row_num/4)
     .style("fill", "#409DAD")
     .style("stroke", "#409DAD")
     .style("stroke-width", 0.1);
@@ -145,7 +182,7 @@ table_head.append("text")
     .attr("x", 0)
     .attr("y", 20)
     .style("text-anchor", "left")
-    .style("fill", "White")
+    .style("fill", "Black")
     .style("font", "15px Arial")
     .style("font-weight", "bold")
     .text("TableManager");
@@ -180,6 +217,15 @@ current_pos = padding;
     .text(function(d, i){ console.log(string_spliter(columns[i]));
                           if (columns[i].indexOf(" ") >= 0) return string_spliter(columns[i])[0];
                           else return columns[i];}); */
+
+table_head.append("rect")
+    .attr("x", 0)
+    .attr("y", height/row_num/4)
+    .attr("width", x_cell_len(table_length))
+    .attr("height", height/row_num/2)
+    .style("fill", "#409DAD")
+    .style("stroke", "#409DAD")
+    .style("stroke-width", 0.1);
 
 var head_for_cell = table_head.selectAll("headcontent")
     .data(dataset)

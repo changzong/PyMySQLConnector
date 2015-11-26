@@ -5,6 +5,7 @@
     <title>云车Table Manager</title>
     <script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='d3.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
     <script type=text/javascript>
         var table_content = {{ content|tojson|safe }}
         console.log(table_content);
@@ -45,6 +46,7 @@
             url: "/tablemanager",
             type: "POST",
             data: {
+                "which": "add_item",
                 "table_name": $("#table_name").val(),
                 "table_type": $("#table_type").val(),
                 "data_level": $("#data_level").val(),
@@ -70,5 +72,39 @@
     });
 </script>
 <script src="{{ url_for('static', filename='d3table.js') }}"></script>
+<script>
+    $(".submit").click(function() {
+        console.log("Tijiaole!");
+        var id = $(this).attr('id').slice(6, 7);
+        var item = $(this).attr('id').slice(7, 8);
+        var substring = $(this).attr('id').slice(6, 8);
+        console.log(id, item, substring);
+        var content = $('#editor'+substring).val();
+        console.log(content);
+        $.ajax({
+            url: "/tablemanager",
+            type: "POST",
+            data: {
+                "which": "edit_item",
+                "id_index": id,
+                "item_index": item,
+                "edit_content": content
+            },
+            success: function (json) {
+                $("body").fadeTo(500, 1);
+                $("#ref_msg").remove();
+                console.log(json);
+                table_content = json.new_content;
+                console.log(table_content);
+                var url = "../static/d3table.js";
+                $.getScript(url, function(){ console.log("Refreshing table!"); });
+            }
+        });
+        $("body").fadeTo(500, 0.4);
+        $("body").append("<div id='ref_msg'>Updating data...</div>");
+        $(this).css("visibility", "hidden");
+        $('#editor'+substring).css("visibility", "hidden");
+    });
+</script>
 </body>
 </html>
