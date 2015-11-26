@@ -127,10 +127,8 @@ bar.selectAll("rect")
     .style("stroke", "#409DAD")
     .style("stroke-width", 0.1)
     .on("mouseover", function(d){
-        tooltip.style("visibility", "visible")
-            //.style("top", (d3.event.pageY-10)+"px")
-            //.style("left",(d3.event.pageX+10)+"px")
-            .html(d.content);
+        d3.select(this).style("cursor", "pointer");
+        tooltip.style("visibility", "visible").html(d.content);
     })
     .on("mousemove", function(){
         tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
@@ -141,12 +139,14 @@ bar.selectAll("rect")
     .on("click", function(d, i){
         var row = (row_num - i - 2).toString();
         var column = d3.select(this).node().parentNode.id;
-        editor.attr("id", "editor"+row+column).style("visibility", "visible")
-            .style("top", (430+y(d.space))+"px").style("left", (cumu_cell_length[column]+70)+"px");
-        submit.attr("id", "submit"+row+column).style("visibility", "visible")
-            .style("top", (430+y(d.space))+"px");
-        if (column == 7 || column == 9) editor.attr("type", "datetime-local");
-        else editor.attr("type", "text");
+        if (column != 0) {
+            editor.attr("id", "editor" + row + column).style("visibility", "visible")
+                .style("top", (420 + y(d.space)) + "px").style("left", (cumu_cell_length[column] + 70) + "px").style("width", (x_cell_len(cell_length[column])-10)+"px");
+            submit.attr("id", "submit" + row + column).style("visibility", "visible")
+                .style("top", (420 + y(d.space)) + "px");
+            if (column == 7 || column == 9) editor.attr("type", "datetime-local");
+            else editor.attr("type", "text");
+        }
     });
 
 current_pos = 0;
@@ -182,8 +182,8 @@ table_head.append("text")
     .attr("x", 0)
     .attr("y", 20)
     .style("text-anchor", "left")
-    .style("fill", "Black")
-    .style("font", "15px Arial")
+    .style("fill", "White")
+    .style("font", "20px Arial")
     .style("font-weight", "bold")
     .text("TableManager");
 //////////////////////////////////////////////////
