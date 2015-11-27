@@ -74,8 +74,8 @@ def info_printer():
                      inputDate, updateMan, updateDate) in cursor:
                     table_list.append([tableManagerId, tableName,
                                       tableType, dataLevel, procName,
-                                      note, inputMan, inputDate,
-                                      updateMan, updateDate])
+                                      note, inputMan, str(inputDate),
+                                      updateMan, str(updateDate)])
                 table_list[int(row_to_edit)][int(column_to_edit)] = content_to_replace
                 data_for_tuple = table_list[int(row_to_edit)][1:]
                 data_for_tuple.append(str(row_to_edit))
@@ -107,8 +107,8 @@ def info_printer():
                      inputDate, updateMan, updateDate) in cursor:
                     table_list.append([tableManagerId, tableName,
                                       tableType, dataLevel, procName,
-                                      note, inputMan, inputDate,
-                                      updateMan, updateDate])
+                                      note, inputMan, str(inputDate),
+                                      updateMan, str(updateDate)])
                 increment_ID = int(tableManagerId)
             cursor.close()
         cnx.close()
