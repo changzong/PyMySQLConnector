@@ -34,13 +34,27 @@ function zoomed() {
     svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 }
 
+function count_len(str) {
+    var len = 0;
+    for (var i=0; i<str.length; i++) {
+        if (str.charCodeAt(i)>127 || str.charCodeAt(i)==94) {
+            len += 2;
+        }
+        else {
+            len ++;
+        }
+    }
+    return len;
+}
+
 for (var i=0; i<columns.length; i++)
 {
     for (var j=table_content.length - 1; j>0; j--)
     {
         sub_element = {content: table_content[j][i], space: cumheight += height/row_num};
         sub_dataset.push(sub_element);
-        sub_column.push(String(table_content[j][i]).length);
+
+        sub_column.push(count_len(String(table_content[j][i])));
     }
     element = {name: columns[i], value: sub_dataset};
     dataset.push(element);
@@ -60,7 +74,7 @@ var table_length = 0;
 var cell_length = [];
 for (var i=0; i<columns.length; i++)
 {
-    cell_length.push(10 + Math.max.apply(null, list_by_column[i]));
+    cell_length.push(20 + Math.max.apply(null, list_by_column[i]));
     table_length = table_length + cell_length[i];
 }
 x_cell_len.domain([0, table_length]);
@@ -127,7 +141,7 @@ bar.selectAll("rect")
     .style("stroke", "#409DAD")
     .style("stroke-width", 0.1)
     .on("mouseover", function(d){
-        d3.select(this).style("cursor", "pointer");
+        d3.select(this).style("cursor", "pointer").style("stroke-width", 1);
         tooltip.style("visibility", "visible").html(d.content);
     })
     .on("mousemove", function(){
@@ -135,6 +149,7 @@ bar.selectAll("rect")
     })
     .on("mouseout", function(){
         tooltip.style("visibility", "hidden");
+        d3.select(this).style("stroke-width", 0.1);
     })
     .on("click", function(d, i){
         var row = (row_num - i - 2).toString();
@@ -230,11 +245,11 @@ table_head.append("rect")
 var head_for_cell = table_head.selectAll("headcontent")
     .data(dataset)
     .enter().append("g")
-    .attr("transform", function(d, i) { var c = current_pos+x_cell_len(cell_length[i])*0.5; current_pos += x_cell_len(cell_length[i]); return "translate(" + c + ",0)"; });
+    .attr("transform", function(d, i) { var c = current_pos+x_cell_len(cell_length[i])*0.5-10; current_pos += x_cell_len(cell_length[i]); return "translate(" + c + ",0)"; });
 head_for_cell.selectAll("headcontent")
     .data(function(d, i){ return string_spliter(columns[i]); })
     .enter().append("text")
-    .attr("y", function(d, i){ return height/row_num/2 + 15*i; })
+    .attr("y", function(d, i){ return height/row_num/2; })
     .style("text-anchor", "middle")
     .style("fill", "White")
     .style("font", "15px Arial")
