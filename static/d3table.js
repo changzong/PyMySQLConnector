@@ -12,17 +12,17 @@ var padding = 10;
 var input_top, input_left;
 var ua = navigator.userAgent.toLowerCase();
 if (ua.indexOf('firefox') > -1) {
-    input_top = 620;
+    input_top = 520;
     input_left = 130;
 }
 else if (ua.indexOf('chrome') > -1) {
-    input_top = 520;
+    input_top = 470;
     input_left = 70;
 }
 
-var margin = {top: 70, right: 20, bottom: 30, left: 60 },
+var margin = {top: 20, right: 20, bottom: 30, left: 60 },
     width = 180 * columns.length - margin.left - margin.right,
-    height = 250 * table_content.length - margin.top - margin.bottom;
+    height = 80 * table_content.length - margin.top - margin.bottom;
     //height = 600 - margin.top - margin.bottom;
 //var zoom = d3.behavior.zoom()
     //.scaleExtent([1, 10])
@@ -168,7 +168,7 @@ bar.selectAll("rect")
         return x_cell_len(cell_length[index]);
     })
     .style("stroke", "#409DAD")
-    .style("stroke-width", 0.1)
+    .style("stroke-width", 0.3)
     .on("mouseover", function(d){
         d3.select(this).style("cursor", "pointer")
             .style("stroke-width", 1);
@@ -180,7 +180,7 @@ bar.selectAll("rect")
     })
     .on("mouseout", function(){
         tooltip.style("visibility", "hidden");
-        d3.select(this).style("stroke-width", 0.1);
+        d3.select(this).style("stroke-width", 0.3);
     })
     .on("click", function(d, i){
         var row = (row_num - i - 2).toString();
@@ -209,7 +209,7 @@ bar.selectAll("rect")
             }
         }
         else {
-            editor.style("visibility", "hidden");
+            d3.selectAll(".editor").style("visibility", "hidden");
             submit.style("visibility", "hidden");
             remove.attr("id", "remove" + row).style("visibility", "visible")
                 .style("top", (input_top + y( d.space ) - height/row_num - height/row_num/4 + height/row_num/2) + "px")
@@ -247,15 +247,15 @@ var table_head = svg.append("g");
 
 table_head.append("rect")
     .attr("x", 0)
-    .attr("y", 0)
+    .attr("y", -10)
     .attr("width", x_cell_len(table_length))
-    .attr("height", height/row_num/4)
+    .attr("height", height/row_num/4+10)
     .style("fill", "#409DAD")
     .style("stroke", "#409DAD")
     .style("stroke-width", 0.1);
 table_head.append("text")
     .attr("x", 0)
-    .attr("y", 20)
+    .attr("y", 10)
     .style("text-anchor", "left")
     .style("fill", "White")
     .style("font", "20px Arial")

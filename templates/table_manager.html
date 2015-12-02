@@ -29,6 +29,8 @@
         <option value="日汇总">日汇总</option>
         <option value="周汇总">周汇总</option>
         <option value="月汇总">月汇总</option>
+        <option value="全量汇总">全量汇总</option>
+        <option value="原子表">原子表</option>
     </select></p>
     <br>
     <p>procName: <input type="text" name="proc_name" id="proc_name" /></p>
@@ -42,8 +44,8 @@
 </form>
 <button id="button">添加</button>
 <br>
-<script src="{{ url_for('static', filename='EventResponsor.js') }}" charset="GBK"></script>
-<script src="{{ url_for('static', filename='d3table.js') }}"  charset="GBK"></script>
+<script src="{{ url_for('static', filename='EventResponsor.js') }}" charset="UTF-8"></script>
+<script src="{{ url_for('static', filename='d3table.js') }}"  charset="UTF-8"></script>
 <script>
     var current_date = get_current_date_time();
     $("#input_date").val(current_date);
