@@ -5,15 +5,6 @@ import mysql.connector
 from mysql.connector import errorcode
 
 
-config = {
-    'user': 'xxx',
-    'password': 'xxx',
-    'host': 'xxx',
-    'database': 'xxx',
-    'use_pure': True  # The default is True which means using pure Python rather than C extensions
-}
-
-
 add_table = ("INSERT INTO TableManager "
                "(tableManagerId, tableName, tableType, dataLevel, procName, note, inputMan, inputDate, updateMan, updateDate)"
                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")

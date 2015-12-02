@@ -20,15 +20,32 @@ def database_connection(configuration):
         return cnx
 
 
-def database_edition(cur, table_data):
+def database_removal(cur, row_id):
     try:
-        print 'Editing new information into table'
+        print 'Removing row from table'
         cur.execute("""
-           UPDATE TableManager
-           SET tableName=%s, tableType=%s, dataLevel=%s, procName=%s, note=%s, inputMan=%s, inputDate=%s, updateMan=%s, updateDate=%s
+           DELETE FROM TableManager
            WHERE tableManagerId=%s
-        """, table_data)
-        print 'Executing finished.'
+        """, row_id)
+        print 'Removing finished.'
+    except mysql.connector.Error as err:
+        print err.message
+        return -1
+    else:
+        print 'OK'
+
+
+def database_restructure(cur, row_id_str, count):
+    try:
+        print 'Updating IDs from table'
+        print row_id_str, count
+        for i in range(int(row_id_str), count):
+            cur.execute("""
+               UPDATE TableManager
+               SET tableManagerId=%s
+               WHERE tableManagerId=%s
+            """, tuple([str(i), str(i+1)]))
+        print 'Updating finished'
     except mysql.connector.Error as err:
         print err.message
         return -1

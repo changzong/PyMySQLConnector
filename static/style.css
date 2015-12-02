@@ -23,7 +23,7 @@ form input {
     position: absolute;
     left: 150px;
     float:left;
-    width:150px;
+    width:170px;
     text-align:left;
     padding:4px;
     margin:1px;
@@ -42,7 +42,7 @@ form textarea {
     position: absolute;
     left: 150px;
     float:left;
-    width:150px;
+    width:170px;
     text-align:left;
     padding:4px;
     margin:1px;

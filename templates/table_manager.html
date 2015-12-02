@@ -5,6 +5,8 @@
     <title>云车Table Manager</title>
     <script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='WdatePicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='CurrentDate.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
     <script type=text/javascript>
         var table_content = {{ content|tojson|safe }}
@@ -12,7 +14,7 @@
     </script>
 </head>
 <body>
-<form style="width:300px">
+<form style="width:320px">
     <p>tableName: <input type="text" name="table_name" id="table_name" /></p>
     <p>tableType:
     <select id="table_type" size=3>
@@ -34,76 +36,28 @@
     <br>
 
     <p>inputMan: <input type="text" name="input_man" id="input_man" /></p>
-    <p>inputDate: <input type="datetime-local" id="input_date" /></p>
+    <p>inputDate: <input type="text" id="input_date" value="" onFocus="WdatePicker({lang:'zh-cn', dateFmt:'yyyy-MM-dd HH:mm:ss'})" /></p>
     <p>updateMan: <input type="text" name="update_man" id="update_man" /></p>
-    <p>updateDate: <input type="datetime-local" id="update_date" /></p>
+    <p>updateDate: <input type="text" id="update_date" value="" onFocus="WdatePicker({lang:'zh-cn', dateFmt:'yyyy-MM-dd HH:mm:ss'})" /></p>
 </form>
 <button id="button">添加</button>
 <br>
+<script src="{{ url_for('static', filename='EventResponsor.js') }}" charset="GBK"></script>
+<script src="{{ url_for('static', filename='d3table.js') }}"  charset="GBK"></script>
 <script>
+    var current_date = get_current_date_time();
+    $("#input_date").val(current_date);
+    $("#update_date").val(current_date);
     $("#button").click(function(){
-        $.ajax({
-            url: "/tablemanager",
-            type: "POST",
-            data: {
-                "which": "add_item",
-                "table_name": $("#table_name").val(),
-                "table_type": $("#table_type").val(),
-                "data_level": $("#data_level").val(),
-                "proc_name": $("#proc_name").val(),
-                "note": $("#note").val(),
-                "input_man": $("#input_man").val(),
-                "input_date": $("#input_date").val(),
-                "update_man": $("#update_man").val(),
-                "update_date": $("#update_date").val()
-            },
-            success: function (json) {
-                $("body").fadeTo(500, 1);
-                $("#ref_msg").remove();
-                console.log(json);
-                table_content = json.new_content;
-                console.log(table_content);
-                var url = "../static/d3table.js";
-                $.getScript(url, function(){ console.log("Refreshing table!"); });
-            }
-        });
-        $("body").fadeTo(500, 0.4);
-        $("body").append("<div id='ref_msg'>Updating data...</div>");
+        add_handler();
     });
-</script>
-<script src="{{ url_for('static', filename='d3table.js') }}"></script>
-<script>
+
     $(".submit").click(function() {
-        console.log("Tijiaole!");
-        var id = $(this).attr('id').slice(6, 7);
-        var item = $(this).attr('id').slice(7, 8);
-        var substring = $(this).attr('id').slice(6, 8);
-        console.log(id, item, substring);
-        var content = $('#editor'+substring).val();
-        console.log(content);
-        $.ajax({
-            url: "/tablemanager",
-            type: "POST",
-            data: {
-                "which": "edit_item",
-                "id_index": id,
-                "item_index": item,
-                "edit_content": content
-            },
-            success: function (json) {
-                $("body").fadeTo(500, 1);
-                $("#ref_msg").remove();
-                console.log(json);
-                table_content = json.new_content;
-                console.log(table_content);
-                var url = "../static/d3table.js";
-                $.getScript(url, function(){ console.log("Refreshing table!"); });
-            }
-        });
-        $("body").fadeTo(500, 0.4);
-        $("body").append("<div id='ref_msg'>Updating data...</div>");
-        $(this).css("visibility", "hidden");
-        $('#editor'+substring).css("visibility", "hidden");
+        edit_handler();
+    });
+
+    $(".remove").click(function() {
+        remove_handler();
     });
 </script>
 </body>
